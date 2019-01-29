@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Volumes/STORAGE/openFrameworks/addons/ofxLines/example/example.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

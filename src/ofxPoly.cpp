@@ -19,7 +19,7 @@ void ofxPolyGrow(ofPolyline & poly, const ofPolyline & polySource, float amount)
         return;
     }
     
-    const vector<ofVec3f> & points = polySource.getVertices();
+    const vector<glm::vec3> & points = polySource.getVertices();
     int numOfPoints = points.size();
 
     bool bClosed = true;
@@ -35,9 +35,9 @@ void ofxPolyGrow(ofPolyline & poly, const ofPolyline & polySource, float amount)
         
         if(bEndings == true) {
 
-            const ofVec3f & p0 = points[i];
-            ofVec3f n0 = polySource.getNormalAtIndex(i);
-            ofVec3f point = p0 + (n0 * amount);
+            const  glm::vec3 & p0 = points[i];
+             glm::vec3 n0 = polySource.getNormalAtIndex(i);
+             glm::vec3 point = p0 + (n0 * amount);
             poly.addVertex(point);
 
             continue;
@@ -48,15 +48,19 @@ void ofxPolyGrow(ofPolyline & poly, const ofPolyline & polySource, float amount)
             i0 += numOfPoints;
         }
         
-        const ofVec3f & p0 = points[i0];
-        const ofVec3f & p1 = points[i];
-        ofVec3f n0 = ofVec2f(p0 - p1).getPerpendicular();
-        ofVec3f n1 = polySource.getNormalAtIndex(i);
+        const  glm::vec3 & p0 = points[i0];
+        const  glm::vec3 & p1 = points[i];
+        glm::vec3 p = p0-p1;
+        //glm::vec3 n0 =  glm::vec3(p0 - p1).getPerpendicular();
+        glm::vec3 n0 = glm::perp( p0, -p1 );
+         glm::vec3 n1 = polySource.getNormalAtIndex(i);
         
-        float angle = ofVec2f(n0).angle(ofVec2f(n1));
+      //  float angle =  glm::vec3(n0).angle( glm::vec3(n1));
+        float angle =  glm::angle(n0,n1);
+
         float length = amount / cos(angle * DEG_TO_RAD);
         
-        ofVec3f point = p1 + (n1 * length);
+         glm::vec3 point = p1 + (n1 * length);
         poly.addVertex(point);
     }
 }
@@ -76,7 +80,7 @@ void ofxPolyGrowAlongNormals(ofPolyline & poly, const ofPolyline & polySource, c
         return;
     }
     
-    vector<ofVec3f> & points = poly.getVertices();
+    vector< glm::vec3> & points = poly.getVertices();
     int numOfPoints = points.size();
     
     for(int i=0; i<numOfPoints; i++) {
@@ -86,8 +90,8 @@ void ofxPolyGrowAlongNormals(ofPolyline & poly, const ofPolyline & polySource, c
             normalLength = normalLengths[i];
         }
         
-        ofVec3f & point = points[i];
-        ofVec3f normal = poly.getNormalAtIndex(i);
+         glm::vec3 & point = points[i];
+         glm::vec3 normal = poly.getNormalAtIndex(i);
         point += (normal * normalLength);
     }
 }
@@ -139,8 +143,8 @@ void ofxPolyToMesh(ofMesh & mesh, const ofPolyline & poly0, const ofPolyline & p
     
     for(int i=0; i<numOfCycles; i++) {
         int j = i % numOfPoints;
-        const ofVec3f & p0 = poly0.getVertices()[j];
-        const ofVec3f & p1 = poly1.getVertices()[j];
+        const  glm::vec3 & p0 = poly0.getVertices()[j];
+        const  glm::vec3 & p1 = poly1.getVertices()[j];
         
         mesh.addVertex(p0);
         mesh.addVertex(p1);
@@ -150,11 +154,11 @@ void ofxPolyToMesh(ofMesh & mesh, const ofPolyline & poly0, const ofPolyline & p
 //--------------------------------------------------------------
 void ofxPolyDrawNormals(const ofPolyline & poly, float normalLength) {
 
-    const vector<ofVec3f> & points = poly.getVertices();
+    const vector< glm::vec3> & points = poly.getVertices();
     
     for(int i=0; i<points.size(); i++) {
-        const ofVec3f & point = points[i];
-        ofVec3f normal = poly.getNormalAtIndex(i);
+        const  glm::vec3 & point = points[i];
+         glm::vec3 normal = poly.getNormalAtIndex(i);
 
         ofDrawLine(point, point + (normal * normalLength));
     }
@@ -162,7 +166,7 @@ void ofxPolyDrawNormals(const ofPolyline & poly, float normalLength) {
 
 //--------------------------------------------------------------
 void ofxPolySave(const ofPolyline & poly, string xmlPath) {
-    ofXml xml;
+/*    ofXml xml;
     xml.addChild("poly");
     xml.setAttribute("closed", ofToString(poly.isClosed()));
     for(int i=0; i<poly.size(); i++) {
@@ -175,12 +179,12 @@ void ofxPolySave(const ofPolyline & poly, string xmlPath) {
         xml.setToParent();
     }
     
-    xml.save(xmlPath);
+    xml.save(xmlPath);*/
 }
 
 //--------------------------------------------------------------
 void ofxPolyLoad(ofPolyline & poly, string xmlPath) {
-    ofXml xml;
+   /* ofXml xml;
     bool bLoaded = xml.load(xmlPath);
     if(bLoaded == false) {
         return;
@@ -200,6 +204,6 @@ void ofxPolyLoad(ofPolyline & poly, string xmlPath) {
         poly.addVertex(x, y);
     }
     
-    poly.setClosed(bClosed);
+    poly.setClosed(bClosed);*/
 }
 
